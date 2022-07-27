@@ -67,7 +67,6 @@ for t in graphdata:
     graphvalues.append(t[1])
 
 plt.plot(graphmonths, graphvalues)
-plt.figure()
 plt.xlabel("Months")
 plt.ylabel("Price (GBP)")
 plt.title("Monthly high Bitcoin price (GDP) over time")
