@@ -1,7 +1,8 @@
 import requests
 import json
 import sqlite3
-import matplotlib
+import matplotlib.pyplot as plt
+import numpy as np
 
 months = []
 highs = []
@@ -39,29 +40,38 @@ cur = connection.cursor()
 s = "create table if not exists prices (btcDate text, btcHigh real, btcLow real)"
 cur.execute(s)
 
-for my_month in months:
-    s = f"insert into prices(btcDate) values ({my_month})"
-    cur.execute(s)
-
-for low in lows:
-    s = f"insert into prices(btcLow) values ({low})"
-    cur.execute(s)
-
-for high in highs:
-    s = f"insert into prices(btcHigh) values ({high})"
-    cur.execute(s)
+alldata = zip(months, highs, lows)
+cur.executemany("insert into prices values (?, ?, ?)", alldata)
 
 s = "select btcDate, btcHigh from prices where btcHigh = (select max(btcHigh) from prices)"
 cur.execute(s)
 rs = cur.fetchall()
-print(rs)
+print(f"The high price was {rs[0][1]} on {rs[0][0]}")
 s = "select btcDate, btcLow from prices where btcLow = (select min(btcLow) from prices)"
 cur.execute(s)
 rs = cur.fetchall()
-print(rs)
+print(f"The low price was {rs[0][1]} on {rs[0][0]}")
+
 # extract high price per month
 
+s = "select btcDate, btcHigh from prices"
+cur.execute(s)
+graphdata = cur.fetchall()
+graphdata.reverse()
 
+graphmonths = []
+graphvalues = []
+
+for t in graphdata:
+    graphmonths.append(t[0])
+    graphvalues.append(t[1])
+
+plt.plot(graphmonths, graphvalues)
+plt.figure()
+plt.xlabel("Months")
+plt.ylabel("Price (GBP)")
+plt.title("Monthly high Bitcoin price (GDP) over time")
+plt.show()
 
 #for month in months:
     #insert stuff
