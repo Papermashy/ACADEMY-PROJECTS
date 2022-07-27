@@ -52,8 +52,8 @@ cur.execute(s)
 rs = cur.fetchall()
 print(f"The low price was {rs[0][1]} on {rs[0][0]}")
 
-# extract high price per month
 
+# HIGHS GRAPH
 s = "select btcDate, btcHigh from prices"
 cur.execute(s)
 graphdata = cur.fetchall()
@@ -70,10 +70,30 @@ plt.plot(graphmonths, graphvalues)
 plt.xlabel("Months")
 plt.ylabel("Price (GBP)")
 plt.title("Monthly high Bitcoin price (GDP) over time")
+plt.xticks(rotation=45, ha="right")
 plt.show()
 
-#for month in months:
-    #insert stuff
+
+# LOWS GRAPH
+s = "select btcDate, btcLow from prices"
+cur.execute(s)
+graphdata = cur.fetchall()
+graphdata.reverse()
+
+graphmonths = []
+graphvalues = []
+
+for t in graphdata:
+    graphmonths.append(t[0])
+    graphvalues.append(t[1])
+
+plt.plot(graphmonths, graphvalues, color="red")
+plt.xlabel("Months")
+plt.ylabel("Price (GBP)")
+plt.title("Monthly low Bitcoin price (GDP) over time")
+plt.xticks(rotation=45, ha="right")
+plt.show()
+
 
 
 
